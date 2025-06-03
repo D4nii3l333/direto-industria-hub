@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, Filter, Star, MapPin, Package, Shield } from 'lucide-react';
 import Header from '../components/Header';
@@ -17,66 +16,54 @@ const Suppliers = () => {
       name: "MetalTech Ind.",
       location: "São Paulo, SP",
       rating: 4.8,
-      products: 45,
-      verified: true,
-      logo: "https://via.placeholder.com/150",
-      category: "equipamentos",
-      description: "Especializada em equipamentos industriais de alta qualidade"
+      specialties: ["Aço Inoxidável", "Metalurgia", "Soldas Especiais"],
+      image: "https://via.placeholder.com/150",
+      verified: true
     },
     {
       id: 2,
       name: "PlastiCorp",
       location: "Rio de Janeiro, RJ",
       rating: 4.6,
-      products: 32,
-      verified: true,
-      logo: "https://via.placeholder.com/150",
-      category: "materias-primas",
-      description: "Fornecedor líder em materiais plásticos industriais"
+      specialties: ["Plásticos Industriais", "Moldagem", "Extrusão"],
+      image: "https://via.placeholder.com/150",
+      verified: true
     },
     {
       id: 3,
       name: "EletroMax",
       location: "Belo Horizonte, MG",
       rating: 4.9,
-      products: 68,
-      verified: true,
-      logo: "https://via.placeholder.com/150",
-      category: "eletronicos",
-      description: "Componentes eletrônicos para automação industrial"
+      specialties: ["Componentes Eletrônicos", "Automação", "Controle"],
+      image: "https://via.placeholder.com/150",
+      verified: true
     },
     {
       id: 4,
       name: "FerroForte",
       location: "Porto Alegre, RS",
       rating: 4.7,
-      products: 23,
-      verified: true,
-      logo: "https://via.placeholder.com/150",
-      category: "ferramentas",
-      description: "Ferramentas profissionais para indústria pesada"
+      specialties: ["Ferramentas", "Equipamentos Pesados", "Manutenção"],
+      image: "https://via.placeholder.com/150",
+      verified: true
     },
     {
       id: 5,
       name: "EmbalaFlex",
       location: "Curitiba, PR",
       rating: 4.5,
-      products: 56,
-      verified: false,
-      logo: "https://via.placeholder.com/150",
-      category: "embalagens",
-      description: "Soluções inovadoras em embalagens industriais"
+      specialties: ["Embalagens", "Logística", "Transporte"],
+      image: "https://via.placeholder.com/150",
+      verified: false
     },
     {
       id: 6,
       name: "SecureInd",
       location: "Salvador, BA",
       rating: 4.8,
-      products: 34,
-      verified: true,
-      logo: "https://via.placeholder.com/150",
-      category: "seguranca",
-      description: "Equipamentos de segurança industrial certificados"
+      specialties: ["Segurança Industrial", "EPIs", "Equipamentos"],
+      image: "https://via.placeholder.com/150",
+      verified: true
     }
   ];
 
@@ -103,8 +90,6 @@ const Suppliers = () => {
   const filteredSuppliers = suppliers.filter(supplier => {
     return (
       supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedCategory === '' || supplier.category === selectedCategory) &&
-      (selectedLocation === '' || supplier.location === selectedLocation) &&
       supplier.rating >= minRating
     );
   });

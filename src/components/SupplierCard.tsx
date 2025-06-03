@@ -52,7 +52,7 @@ const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
           </div>
           
           <div className="flex flex-wrap gap-2 mb-4">
-            {supplier.specialties.slice(0, 3).map((specialty, index) => (
+            {supplier.specialties && supplier.specialties.slice(0, 3).map((specialty, index) => (
               <span key={index} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
                 {specialty}
               </span>

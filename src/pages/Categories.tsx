@@ -43,18 +43,18 @@ const Categories = () => {
       name: "MetalTech Ind.",
       location: "São Paulo, SP",
       rating: 4.8,
-      products: 45,
-      verified: true,
-      logo: "https://via.placeholder.com/150"
+      specialties: ["Aço Inoxidável", "Metalurgia", "Soldas Especiais"],
+      image: "https://via.placeholder.com/150",
+      verified: true
     },
     {
       id: 2,
       name: "PlastiCorp",
-      location: "Rio de Janeiro, RJ", 
+      location: "Rio de Janeiro, RJ",
       rating: 4.6,
-      products: 32,
-      verified: true,
-      logo: "https://via.placeholder.com/150"
+      specialties: ["Plásticos Industriais", "Moldagem", "Extrusão"],
+      image: "https://via.placeholder.com/150",
+      verified: true
     }
   ];
 
