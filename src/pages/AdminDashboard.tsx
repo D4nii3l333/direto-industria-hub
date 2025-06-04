@@ -40,12 +40,6 @@ const AdminDashboard = () => {
     navigate('/');
   };
 
-  const stats = [
-    { name: 'Fornecedores', value: '5', icon: Package, color: 'bg-blue-500' },
-    { name: 'Categorias', value: '6', icon: Tag, color: 'bg-green-500' },
-    { name: 'Usuários', value: '1', icon: Users, color: 'bg-purple-500' },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b border-gray-200">

@@ -27,19 +27,22 @@ const Index = () => {
 
   const testimonials = [
     {
-      name: "Maria Santos",
+      text: "Encontramos fornecedores de qualidade em questão de minutos. A plataforma revolucionou nossa cadeia de suprimentos.",
+      author: "Maria Santos",
       company: "Indústria MegaCorp",
-      text: "Encontramos fornecedores de qualidade em questão de minutos. A plataforma revolucionou nossa cadeia de suprimentos."
+      role: "Gerente de Compras"
     },
     {
-      name: "João Silva",
+      text: "Interface intuitiva e fornecedores verificados. Conseguimos reduzir custos em 30% com os novos parceiros encontrados.",
+      author: "João Silva",
       company: "Fábrica TechnoPlus",
-      text: "Interface intuitiva e fornecedores verificados. Conseguimos reduzir custos em 30% com os novos parceiros encontrados."
+      role: "Diretor de Operações"
     },
     {
-      name: "Ana Costa",
+      text: "Atendimento excepcional e resultados rápidos. Recomendo para qualquer empresa que busca eficiência na procurement.",
+      author: "Ana Costa",
       company: "Manufatura ProIndustrial",
-      text: "Atendimento excepcional e resultados rápidos. Recomendo para qualquer empresa que busca eficiência na procurement."
+      role: "CEO"
     }
   ];
 
