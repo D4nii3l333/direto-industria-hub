@@ -1,193 +1,133 @@
-import React, { useState } from 'react';
-import { Search, Filter, Star, MapPin, Package, Shield } from 'lucide-react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import SupplierCard from '../components/SupplierCard';
+import React, { useEffect, useState } from 'react';
+import { Search, Filter, MapPin, Star } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import SupplierCard from '@/components/SupplierCard';
+import { getSuppliers, initializeData } from '@/data/mockData';
 
 const Suppliers = () => {
+  const [suppliers, setSuppliers] = useState<any[]>([]);
+  const [filteredSuppliers, setFilteredSuppliers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [minRating, setMinRating] = useState(0);
+  const [locationFilter, setLocationFilter] = useState('');
+  const [ratingFilter, setRatingFilter] = useState('');
 
-  const suppliers = [
-    {
-      id: 1,
-      name: "MetalTech Ind.",
-      location: "São Paulo, SP",
-      rating: 4.8,
-      specialties: ["Aço Inoxidável", "Metalurgia", "Soldas Especiais"],
-      image: "https://via.placeholder.com/150",
-      verified: true
-    },
-    {
-      id: 2,
-      name: "PlastiCorp",
-      location: "Rio de Janeiro, RJ",
-      rating: 4.6,
-      specialties: ["Plásticos Industriais", "Moldagem", "Extrusão"],
-      image: "https://via.placeholder.com/150",
-      verified: true
-    },
-    {
-      id: 3,
-      name: "EletroMax",
-      location: "Belo Horizonte, MG",
-      rating: 4.9,
-      specialties: ["Componentes Eletrônicos", "Automação", "Controle"],
-      image: "https://via.placeholder.com/150",
-      verified: true
-    },
-    {
-      id: 4,
-      name: "FerroForte",
-      location: "Porto Alegre, RS",
-      rating: 4.7,
-      specialties: ["Ferramentas", "Equipamentos Pesados", "Manutenção"],
-      image: "https://via.placeholder.com/150",
-      verified: true
-    },
-    {
-      id: 5,
-      name: "EmbalaFlex",
-      location: "Curitiba, PR",
-      rating: 4.5,
-      specialties: ["Embalagens", "Logística", "Transporte"],
-      image: "https://via.placeholder.com/150",
-      verified: false
-    },
-    {
-      id: 6,
-      name: "SecureInd",
-      location: "Salvador, BA",
-      rating: 4.8,
-      specialties: ["Segurança Industrial", "EPIs", "Equipamentos"],
-      image: "https://via.placeholder.com/150",
-      verified: true
+  useEffect(() => {
+    // Inicializa os dados se necessário e carrega do localStorage
+    initializeData();
+    const loadedSuppliers = getSuppliers();
+    setSuppliers(loadedSuppliers);
+    setFilteredSuppliers(loadedSuppliers);
+  }, []);
+
+  useEffect(() => {
+    let filtered = suppliers;
+
+    if (searchTerm) {
+      filtered = filtered.filter(supplier =>
+        supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        supplier.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        supplier.specialties.some((specialty: string) => 
+          specialty.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     }
-  ];
 
-  const categories = [
-    { value: '', label: 'Todas as categorias' },
-    { value: 'equipamentos', label: 'Equipamentos Industriais' },
-    { value: 'materias-primas', label: 'Matérias-Primas' },
-    { value: 'ferramentas', label: 'Ferramentas' },
-    { value: 'eletronicos', label: 'Componentes Eletrônicos' },
-    { value: 'embalagens', label: 'Embalagens' },
-    { value: 'seguranca', label: 'Segurança Industrial' }
-  ];
+    if (locationFilter) {
+      filtered = filtered.filter(supplier =>
+        supplier.location.toLowerCase().includes(locationFilter.toLowerCase())
+      );
+    }
 
-  const locations = [
-    { value: '', label: 'Todas as localizações' },
-    { value: 'São Paulo, SP', label: 'São Paulo, SP' },
-    { value: 'Rio de Janeiro, RJ', label: 'Rio de Janeiro, RJ' },
-    { value: 'Belo Horizonte, MG', label: 'Belo Horizonte, MG' },
-    { value: 'Porto Alegre, RS', label: 'Porto Alegre, RS' },
-    { value: 'Curitiba, PR', label: 'Curitiba, PR' },
-    { value: 'Salvador, BA', label: 'Salvador, BA' }
-  ];
+    if (ratingFilter) {
+      const minRating = parseFloat(ratingFilter);
+      filtered = filtered.filter(supplier => supplier.rating >= minRating);
+    }
 
-  const filteredSuppliers = suppliers.filter(supplier => {
-    return (
-      supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      supplier.rating >= minRating
-    );
-  });
+    setFilteredSuppliers(filtered);
+  }, [searchTerm, locationFilter, ratingFilter, suppliers]);
+
+  const locations = [...new Set(suppliers.map(s => s.location))];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-black mb-2">Fornecedores</h1>
-            <p className="text-gray-600">Encontre fornecedores verificados para suas necessidades industriais</p>
-          </div>
-
-          {/* Search and Filters */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-            <div className="grid md:grid-cols-4 gap-4 mb-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Buscar fornecedores..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
-                />
-              </div>
-
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
-              >
-                {categories.map(category => (
-                  <option key={category.value} value={category.value}>{category.label}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
-              >
-                {locations.map(location => (
-                  <option key={location.value} value={location.value}>{location.label}</option>
-                ))}
-              </select>
-
-              <select
-                value={minRating}
-                onChange={(e) => setMinRating(Number(e.target.value))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
-              >
-                <option value={0}>Qualquer avaliação</option>
-                <option value={4.5}>4.5+ estrelas</option>
-                <option value={4.0}>4.0+ estrelas</option>
-                <option value={3.5}>3.5+ estrelas</option>
-              </select>
-            </div>
-
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <span>{filteredSuppliers.length} fornecedores encontrados</span>
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center">
-                  <input type="checkbox" className="mr-2" />
-                  <span>Apenas verificados</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Suppliers Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSuppliers.map(supplier => (
-              <SupplierCard key={supplier.id} supplier={supplier} />
-            ))}
-          </div>
-
-          {/* Empty State */}
-          {filteredSuppliers.length === 0 && (
-            <div className="text-center py-12">
-              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">Nenhum fornecedor encontrado</h3>
-              <p className="text-gray-500">Tente ajustar os filtros para encontrar mais resultados.</p>
-            </div>
-          )}
-
-          {/* Load More */}
-          {filteredSuppliers.length > 0 && (
-            <div className="text-center mt-8">
-              <button className="bg-[#FED141] text-black px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
-                Carregar mais fornecedores
-              </button>
-            </div>
-          )}
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Fornecedores</h1>
+          <p className="text-gray-600">Encontre os melhores fornecedores para sua indústria</p>
         </div>
+
+        {/* Search and Filters */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Buscar fornecedores..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+              />
+            </div>
+            
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <select
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141] appearance-none"
+              >
+                <option value="">Todas as localizações</option>
+                {locations.map(location => (
+                  <option key={location} value={location}>{location}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="relative">
+              <Star className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <select
+                value={ratingFilter}
+                onChange={(e) => setRatingFilter(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141] appearance-none"
+              >
+                <option value="">Todas as avaliações</option>
+                <option value="4.5">4.5+ estrelas</option>
+                <option value="4.0">4.0+ estrelas</option>
+                <option value="3.5">3.5+ estrelas</option>
+                <option value="3.0">3.0+ estrelas</option>
+              </select>
+            </div>
+            
+            <button className="flex items-center justify-center space-x-2 bg-[#FED141] text-black px-4 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors">
+              <Filter className="w-5 h-5" />
+              <span>Filtrar</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Results */}
+        <div className="mb-6">
+          <p className="text-gray-600">
+            Encontrados {filteredSuppliers.length} fornecedores
+          </p>
+        </div>
+
+        {/* Suppliers Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredSuppliers.map((supplier) => (
+            <SupplierCard key={supplier.id} supplier={supplier} />
+          ))}
+        </div>
+
+        {filteredSuppliers.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">Nenhum fornecedor encontrado com os filtros aplicados.</p>
+          </div>
+        )}
       </main>
 
       <Footer />

@@ -2,94 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-
-interface Category {
-  id: number;
-  name: string;
-  count: number;
-  icon: string;
-  slug: string;
-  products: Product[];
-}
-
-interface Product {
-  id: number;
-  name: string;
-  company: string;
-  description: string;
-  minQuantity: number;
-  price: number;
-  categoryId: number;
-}
+import { getCategories, setCategories, Category, Product } from '@/data/mockData';
 
 const AdminCategories = () => {
   const navigate = useNavigate();
-  const [categories, setCategories] = useState<Category[]>([
-    { 
-      id: 1, 
-      name: "Equipamentos Industriais", 
-      count: 437, 
-      icon: "🏭", 
-      slug: "equipamentos-industriais",
-      products: [
-        {
-          id: 1,
-          name: "Compressor de Ar Industrial",
-          company: "MetalTech Ind.",
-          description: "Compressor de alta capacidade para uso industrial",
-          minQuantity: 1,
-          price: 15000,
-          categoryId: 1
-        }
-      ]
-    },
-    { 
-      id: 2, 
-      name: "Matérias-Primas", 
-      count: 294, 
-      icon: "⚡", 
-      slug: "materias-primas",
-      products: []
-    },
-    { 
-      id: 3, 
-      name: "Ferramentas", 
-      count: 183, 
-      icon: "🔧", 
-      slug: "ferramentas",
-      products: []
-    },
-    { 
-      id: 4, 
-      name: "Componentes Eletrônicos", 
-      count: 256, 
-      icon: "💻", 
-      slug: "componentes-eletronicos",
-      products: []
-    },
-    { 
-      id: 5, 
-      name: "Embalagens", 
-      count: 165, 
-      icon: "📦", 
-      slug: "embalagens",
-      products: []
-    },
-    { 
-      id: 6, 
-      name: "Segurança Industrial", 
-      count: 92, 
-      icon: "🛡️", 
-      slug: "seguranca-industrial",
-      products: []
-    }
-  ]);
-
+  const [categories, setCategoriesState] = useState<Category[]>([]);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const [categoryForm, setCategoryForm] = useState({
     name: '',
@@ -110,8 +31,18 @@ const AdminCategories = () => {
     const isAdmin = localStorage.getItem('isAdmin');
     if (!isAdmin) {
       navigate('/admin/login');
+      return;
     }
+    
+    // Carrega categorias do localStorage
+    const loadedCategories = getCategories();
+    setCategoriesState(loadedCategories);
   }, [navigate]);
+
+  const updateCategories = (newCategories: Category[]) => {
+    setCategoriesState(newCategories);
+    setCategories(newCategories);
+  };
 
   const handleCategorySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,10 +57,12 @@ const AdminCategories = () => {
     };
 
     if (editingCategory) {
-      setCategories(categories.map(c => c.id === editingCategory.id ? newCategory : c));
+      const updatedCategories = categories.map(c => c.id === editingCategory.id ? newCategory : c);
+      updateCategories(updatedCategories);
       toast({ title: "Categoria atualizada com sucesso!" });
     } else {
-      setCategories([...categories, newCategory]);
+      const updatedCategories = [...categories, newCategory];
+      updateCategories(updatedCategories);
       toast({ title: "Categoria adicionada com sucesso!" });
     }
 
@@ -149,7 +82,7 @@ const AdminCategories = () => {
       categoryId: productForm.categoryId
     };
 
-    setCategories(categories.map(category => {
+    const updatedCategories = categories.map(category => {
       if (category.id === productForm.categoryId) {
         let updatedProducts;
         if (editingProduct) {
@@ -164,7 +97,9 @@ const AdminCategories = () => {
         };
       }
       return category;
-    }));
+    });
+
+    updateCategories(updatedCategories);
 
     toast({ 
       title: editingProduct ? "Produto atualizado com sucesso!" : "Produto adicionado com sucesso!" 
@@ -175,14 +110,15 @@ const AdminCategories = () => {
 
   const handleDeleteCategory = (id: number) => {
     if (confirm('Tem certeza que deseja excluir esta categoria e todos os seus produtos?')) {
-      setCategories(categories.filter(c => c.id !== id));
+      const updatedCategories = categories.filter(c => c.id !== id);
+      updateCategories(updatedCategories);
       toast({ title: "Categoria excluída com sucesso!" });
     }
   };
 
   const handleDeleteProduct = (categoryId: number, productId: number) => {
     if (confirm('Tem certeza que deseja excluir este produto?')) {
-      setCategories(categories.map(category => {
+      const updatedCategories = categories.map(category => {
         if (category.id === categoryId) {
           const updatedProducts = category.products.filter(p => p.id !== productId);
           return {
@@ -192,7 +128,8 @@ const AdminCategories = () => {
           };
         }
         return category;
-      }));
+      });
+      updateCategories(updatedCategories);
       toast({ title: "Produto excluído com sucesso!" });
     }
   };

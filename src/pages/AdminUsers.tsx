@@ -1,49 +1,34 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, User, Mail, Phone, MapPin } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  location: string;
-  type: 'buyer' | 'supplier';
-  createdAt: string;
-  lastLogin: string;
-  verified: boolean;
-}
+import { getUsers, setUsers, User as UserType } from '@/data/mockData';
 
 const AdminUsers = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: 1,
-      name: "Isac",
-      email: "isac@empresa.com.br",
-      phone: "(11) 99999-8888",
-      company: "Empresa Industrial Ltda",
-      location: "São Paulo, SP",
-      type: "buyer",
-      createdAt: "2024-01-15",
-      lastLogin: "2024-01-30",
-      verified: true
-    }
-  ]);
+  const [users, setUsersState] = useState<UserType[]>([]);
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdmin');
     if (!isAdmin) {
       navigate('/admin/login');
+      return;
     }
+    
+    // Carrega usuários do localStorage
+    const loadedUsers = getUsers();
+    setUsersState(loadedUsers);
   }, [navigate]);
+
+  const updateUsers = (newUsers: UserType[]) => {
+    setUsersState(newUsers);
+    setUsers(newUsers);
+  };
 
   const handleDeleteUser = (id: number) => {
     if (confirm('Tem certeza que deseja excluir este usuário?')) {
-      setUsers(users.filter(u => u.id !== id));
+      const updatedUsers = users.filter(u => u.id !== id);
+      updateUsers(updatedUsers);
       toast({ title: "Usuário excluído com sucesso!" });
     }
   };

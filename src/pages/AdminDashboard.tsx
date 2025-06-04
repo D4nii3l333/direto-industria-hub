@@ -1,17 +1,38 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Users, Package, Tag, LogOut, BarChart3 } from 'lucide-react';
+import { getSuppliers, getCategories, getUsers, initializeData } from '@/data/mockData';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState([
+    { name: 'Fornecedores', value: '0', icon: Package, color: 'bg-blue-500' },
+    { name: 'Categorias', value: '0', icon: Tag, color: 'bg-green-500' },
+    { name: 'Usuários', value: '0', icon: Users, color: 'bg-purple-500' },
+  ]);
 
   useEffect(() => {
     // Verifica se é admin
     const isAdmin = localStorage.getItem('isAdmin');
     if (!isAdmin) {
       navigate('/admin/login');
+      return;
     }
+
+    // Inicializa os dados se necessário
+    initializeData();
+
+    // Atualiza as estatísticas com dados reais
+    const suppliers = getSuppliers();
+    const categories = getCategories();
+    const users = getUsers();
+
+    setStats([
+      { name: 'Fornecedores', value: suppliers.length.toString(), icon: Package, color: 'bg-blue-500' },
+      { name: 'Categorias', value: categories.length.toString(), icon: Tag, color: 'bg-green-500' },
+      { name: 'Usuários', value: users.length.toString(), icon: Users, color: 'bg-purple-500' },
+    ]);
   }, [navigate]);
 
   const handleLogout = () => {

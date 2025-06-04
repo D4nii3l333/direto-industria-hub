@@ -2,61 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit, Trash2, MapPin, Star } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-
-interface Supplier {
-  id: number;
-  name: string;
-  location: string;
-  rating: number;
-  specialties: string[];
-  image: string;
-  verified: boolean;
-  description?: string;
-  phone?: string;
-  email?: string;
-}
+import { getSuppliers, setSuppliers, Supplier } from '@/data/mockData';
 
 const AdminSuppliers = () => {
   const navigate = useNavigate();
-  const [suppliers, setSuppliers] = useState<Supplier[]>([
-    {
-      id: 1,
-      name: "MetalTech Ind.",
-      location: "São Paulo, SP",
-      rating: 4.8,
-      specialties: ["Aço Inoxidável", "Metalurgia", "Soldas Especiais"],
-      image: "https://via.placeholder.com/150",
-      verified: true,
-      description: "Especializada em produtos metalúrgicos de alta qualidade",
-      phone: "(11) 99999-9999",
-      email: "contato@metaltech.com.br"
-    },
-    {
-      id: 2,
-      name: "PlastiCorp",
-      location: "Rio de Janeiro, RJ",
-      rating: 4.6,
-      specialties: ["Plásticos Industriais", "Moldagem", "Extrusão"],
-      image: "https://via.placeholder.com/150",
-      verified: true,
-      description: "Líder em soluções de plásticos para a indústria",
-      phone: "(21) 88888-7777",
-      email: "vendas@plasticorp.com.br"
-    },
-    {
-      id: 3,
-      name: "FerramentasBR",
-      location: "Belo Horizonte, MG",
-      rating: 4.5,
-      specialties: ["Ferramentas Elétricas", "Manuais", "Medição"],
-      image: "https://via.placeholder.com/150",
-      verified: false,
-      description: "Ampla variedade de ferramentas para profissionais e hobbistas",
-      phone: "(31) 77777-6666",
-      email: "info@ferramentasbr.com.br"
-    }
-  ]);
-
+  const [suppliers, setSuppliersState] = useState<Supplier[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
   const [formData, setFormData] = useState({
@@ -75,8 +25,18 @@ const AdminSuppliers = () => {
     const isAdmin = localStorage.getItem('isAdmin');
     if (!isAdmin) {
       navigate('/admin/login');
+      return;
     }
+    
+    // Carrega fornecedores do localStorage
+    const loadedSuppliers = getSuppliers();
+    setSuppliersState(loadedSuppliers);
   }, [navigate]);
+
+  const updateSuppliers = (newSuppliers: Supplier[]) => {
+    setSuppliersState(newSuppliers);
+    setSuppliers(newSuppliers);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,10 +55,12 @@ const AdminSuppliers = () => {
     };
 
     if (editingSupplier) {
-      setSuppliers(suppliers.map(s => s.id === editingSupplier.id ? newSupplier : s));
+      const updatedSuppliers = suppliers.map(s => s.id === editingSupplier.id ? newSupplier : s);
+      updateSuppliers(updatedSuppliers);
       toast({ title: "Fornecedor atualizado com sucesso!" });
     } else {
-      setSuppliers([...suppliers, newSupplier]);
+      const updatedSuppliers = [...suppliers, newSupplier];
+      updateSuppliers(updatedSuppliers);
       toast({ title: "Fornecedor adicionado com sucesso!" });
     }
 
@@ -123,7 +85,8 @@ const AdminSuppliers = () => {
 
   const handleDelete = (id: number) => {
     if (confirm('Tem certeza que deseja excluir este fornecedor?')) {
-      setSuppliers(suppliers.filter(s => s.id !== id));
+      const updatedSuppliers = suppliers.filter(s => s.id !== id);
+      updateSuppliers(updatedSuppliers);
       toast({ title: "Fornecedor excluído com sucesso!" });
     }
   };
