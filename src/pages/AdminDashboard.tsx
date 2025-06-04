@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Users, Package, Category, LogOut, BarChart3 } from 'lucide-react';
+import { Users, Package, Tag, LogOut, BarChart3 } from 'lucide-react';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const AdminDashboard = () => {
 
   const stats = [
     { name: 'Fornecedores', value: '5', icon: Package, color: 'bg-blue-500' },
-    { name: 'Categorias', value: '6', icon: Category, color: 'bg-green-500' },
+    { name: 'Categorias', value: '6', icon: Tag, color: 'bg-green-500' },
     { name: 'Usuários', value: '1', icon: Users, color: 'bg-purple-500' },
   ];
 
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 hover:border-[#FED141] group"
           >
             <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4 group-hover:bg-green-200">
-              <Category className="w-6 h-6 text-green-600" />
+              <Tag className="w-6 h-6 text-green-600" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Categorias</h3>
             <p className="text-gray-600">Gerenciar categorias e produtos</p>
