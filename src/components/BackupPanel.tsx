@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { save, undo, redo } from 'lucide-react';
+import { Save, Undo, Redo } from 'lucide-react';
 import { createBackup, restoreBackup, getBackupInfo, restoreToDefaults, BackupData } from '@/data/mockData';
 import { useToast } from '@/hooks/use-toast';
 
@@ -80,7 +80,7 @@ const BackupPanel = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="flex items-center space-x-2">
-          <save className="w-4 h-4" />
+          <Save className="w-4 h-4" />
           <span>Backup</span>
         </Button>
       </DialogTrigger>
@@ -111,7 +111,7 @@ const BackupPanel = () => {
               onClick={handleCreateBackup}
               className="w-full flex items-center justify-center space-x-2"
             >
-              <save className="w-4 h-4" />
+              <Save className="w-4 h-4" />
               <span>Salvar Estado Atual</span>
             </Button>
 
@@ -121,7 +121,7 @@ const BackupPanel = () => {
               className="w-full flex items-center justify-center space-x-2"
               disabled={!backupInfo}
             >
-              <undo className="w-4 h-4" />
+              <Undo className="w-4 h-4" />
               <span>Restaurar Backup</span>
             </Button>
 
@@ -130,7 +130,7 @@ const BackupPanel = () => {
               variant="outline"
               className="w-full flex items-center justify-center space-x-2 border-orange-300 text-orange-600 hover:bg-orange-50"
             >
-              <redo className="w-4 h-4" />
+              <Redo className="w-4 h-4" />
               <span>Restaurar Padrão</span>
             </Button>
           </div>
