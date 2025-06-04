@@ -1,8 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Users, Package, Tag, LogOut, BarChart3 } from 'lucide-react';
+import { Users, Package, Tag, LogOut } from 'lucide-react';
 import { getSuppliers, getCategories, getUsers, initializeData } from '@/data/mockData';
+import BackupPanel from '@/components/BackupPanel';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -53,13 +53,16 @@ const AdminDashboard = () => {
               <span className="text-gray-400">|</span>
               <h1 className="text-xl font-semibold text-gray-900">Painel Administrativo</h1>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              <span>Sair</span>
-            </button>
+            <div className="flex items-center space-x-4">
+              <BackupPanel />
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Sair</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>

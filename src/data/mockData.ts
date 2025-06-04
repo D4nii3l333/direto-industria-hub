@@ -225,3 +225,62 @@ export const initializeData = (): void => {
     setUsers(defaultUsers);
   }
 };
+
+// Funções de backup
+export interface BackupData {
+  suppliers: Supplier[];
+  categories: Category[];
+  users: User[];
+  timestamp: string;
+  version: string;
+}
+
+export const createBackup = (): BackupData => {
+  const backup: BackupData = {
+    suppliers: getSuppliers(),
+    categories: getCategories(),
+    users: getUsers(),
+    timestamp: new Date().toISOString(),
+    version: '1.0'
+  };
+  
+  localStorage.setItem('system_backup', JSON.stringify(backup));
+  return backup;
+};
+
+export const restoreBackup = (): boolean => {
+  try {
+    const backupData = localStorage.getItem('system_backup');
+    if (!backupData) {
+      return false;
+    }
+    
+    const backup: BackupData = JSON.parse(backupData);
+    
+    // Restaura todos os dados
+    setSuppliers(backup.suppliers);
+    setCategories(backup.categories);
+    setUsers(backup.users);
+    
+    return true;
+  } catch (error) {
+    console.error('Erro ao restaurar backup:', error);
+    return false;
+  }
+};
+
+export const getBackupInfo = (): BackupData | null => {
+  try {
+    const backupData = localStorage.getItem('system_backup');
+    return backupData ? JSON.parse(backupData) : null;
+  } catch (error) {
+    console.error('Erro ao obter informações do backup:', error);
+    return null;
+  }
+};
+
+export const restoreToDefaults = (): void => {
+  setSuppliers(defaultSuppliers);
+  setCategories(defaultCategories);
+  setUsers(defaultUsers);
+};
