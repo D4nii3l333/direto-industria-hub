@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
@@ -46,6 +45,8 @@ const Login = () => {
         {/* Form */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            
+            
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 E-mail
@@ -108,6 +109,8 @@ const Login = () => {
             </button>
           </form>
 
+          
+
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -138,13 +141,21 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-2">
             <p className="text-sm text-gray-600">
               Não tem uma conta?{' '}
               <Link to="/cadastro" className="text-[#FED141] font-medium hover:underline">
                 Cadastre-se gratuitamente
               </Link>
             </p>
+            <div className="border-t pt-3">
+              <Link 
+                to="/admin/login" 
+                className="text-sm text-gray-500 hover:text-[#FED141] transition-colors font-medium"
+              >
+                Sou administrador
+              </Link>
+            </div>
           </div>
         </div>
       </div>

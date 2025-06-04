@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,11 @@ import HowItWorks from "./pages/HowItWorks";
 import Plans from "./pages/Plans";
 import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminSuppliers from "./pages/AdminSuppliers";
+import AdminCategories from "./pages/AdminCategories";
+import AdminUsers from "./pages/AdminUsers";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +43,14 @@ const App = () => (
           <Route path="/planos" element={<Plans />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/chat/:supplierId" element={<Chat />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/fornecedores" element={<AdminSuppliers />} />
+          <Route path="/admin/categorias" element={<AdminCategories />} />
+          <Route path="/admin/usuarios" element={<AdminUsers />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
