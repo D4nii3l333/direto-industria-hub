@@ -1,8 +1,10 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Users, Package, Tag, LogOut } from 'lucide-react';
 import { getSuppliers, getCategories, getUsers, initializeData } from '@/data/mockData';
 import BackupPanel from '@/components/BackupPanel';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -66,6 +68,8 @@ const AdminDashboard = () => {
           </div>
         </div>
       </header>
+
+      <Breadcrumbs />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">

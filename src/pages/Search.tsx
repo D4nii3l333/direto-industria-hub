@@ -4,6 +4,8 @@ import { Search, Filter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SupplierCard from '@/components/SupplierCard';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { getSuppliers, getCategories, initializeData } from '@/data/mockData';
 
 const SearchPage = () => {
@@ -13,18 +15,23 @@ const SearchPage = () => {
   const [results, setResults] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Inicializa os dados se necessário e carrega do localStorage
-    initializeData();
-    const loadedSuppliers = getSuppliers();
-    const loadedCategories = getCategories();
-    setSuppliers(loadedSuppliers);
-    setCategories(loadedCategories);
+    const loadData = async () => {
+      setLoading(true);
+      initializeData();
+      const loadedSuppliers = getSuppliers();
+      const loadedCategories = getCategories();
+      setSuppliers(loadedSuppliers);
+      setCategories(loadedCategories);
 
-    // Pega o termo de busca da URL
-    const query = searchParams.get('q') || '';
-    setSearchTerm(query);
+      const query = searchParams.get('q') || '';
+      setSearchTerm(query);
+      setLoading(false);
+    };
+
+    loadData();
   }, [searchParams]);
 
   useEffect(() => {
@@ -56,9 +63,23 @@ const SearchPage = () => {
     setResults(filtered);
   }, [searchTerm, categoryFilter, suppliers, categories]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <Breadcrumbs />
+        <div className="flex items-center justify-center min-h-[400px]">
+          <LoadingSpinner size="lg" text="Buscando..." />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      <Breadcrumbs />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
