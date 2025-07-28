@@ -1,59 +1,189 @@
-# Welcome to your Lovable project
+# Marketplace B2B Industrial
 
-## Project info
+## 📋 Sobre o Projeto
 
-**URL**: https://lovable.dev/projects/a1787893-e7f3-456b-b00c-11d447880c57
+Este é um marketplace B2B especializado em conectar indústrias e fornecedores de forma direta, eliminando intermediários e otimizando negociações comerciais. A plataforma foi desenvolvida para facilitar a descoberta de produtos industriais, estabelecer conexões comerciais e promover transações eficientes no setor industrial.
 
-## How can I edit this code?
+## 🎯 Objetivo Principal
 
-There are several ways of editing your application.
+Criar uma ponte digital entre compradores industriais e fornecedores, proporcionando:
+- **Conexão Direta**: Eliminação de intermediários nas negociações
+- **Transparência**: Informações claras sobre produtos, preços e fornecedores
+- **Eficiência**: Processo simplificado de descoberta e negociação
+- **Segurança**: Ambiente confiável para transações B2B
 
-**Use Lovable**
+## 🏢 Público-Alvo
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a1787893-e7f3-456b-b00c-11d447880c57) and start prompting.
+### Compradores (Indústrias)
+- Indústrias manufatureiras
+- Empresas de construção
+- Distribuidores industriais
+- Empresas de manutenção industrial
 
-Changes made via Lovable will be committed automatically to this repo.
+### Fornecedores
+- Fabricantes de equipamentos industriais
+- Distribuidores de matérias-primas
+- Prestadores de serviços industriais
+- Importadores e exportadores
 
-**Use your preferred IDE**
+## ⚡ Funcionalidades Principais
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Para Compradores
+- **Busca Avançada**: Pesquisa por produtos, categorias e localização
+- **Filtros Inteligentes**: Por rating, localização e especialidades
+- **Perfis Detalhados**: Informações completas dos fornecedores
+- **Comparação**: Análise de diferentes fornecedores e produtos
+- **Comunicação Direta**: Chat integrado para negociações
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Para Fornecedores
+- **Cadastro de Produtos**: Gestão completa do catálogo
+- **Perfil Empresarial**: Showcase da empresa e certificações
+- **Gestão de Leads**: Acompanhamento de interessados
+- **Analytics**: Métricas de visualizações e interesse
 
-Follow these steps:
+### Área Administrativa
+- **Dashboard Completo**: Métricas e KPIs da plataforma
+- **Gestão de Usuários**: Controle de compradores e fornecedores
+- **Gestão de Categorias**: Organização dos produtos
+- **Sistema de Backup**: Proteção e recuperação de dados
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🛠 Tecnologias Utilizadas
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend
+- **React 18** - Biblioteca principal
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Framework de estilização
+- **React Router** - Roteamento
+- **React Query** - Gerenciamento de estado server
+- **Vite** - Build tool
 
-# Step 3: Install the necessary dependencies.
-npm i
+### UI/UX
+- **Radix UI** - Componentes acessíveis
+- **Lucide React** - Ícones
+- **Shadcn/ui** - Sistema de design
+- **Sonner** - Notificações
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### Funcionalidades Especiais
+- **Sistema de Temas** - Suporte a modo escuro/claro
+- **Responsividade** - Adaptação para todos os dispositivos
+- **Acessibilidade** - Conformidade com padrões WCAG
+- **SEO Otimizado** - Meta tags e estrutura semântica
 
-**Edit a file directly in GitHub**
+## 📊 Estrutura de Dados
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Fornecedores
+- Informações básicas (nome, localização, contato)
+- Especialidades e produtos
+- Certificações e avaliações
+- Histórico e portfólio
 
-**Use GitHub Codespaces**
+### Categorias
+- Organização hierárquica de produtos
+- Contadores de produtos por categoria
+- Ícones e descrições
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Produtos
+- Especificações técnicas
+- Preços e quantidades mínimas
+- Imagens e documentação
+- Disponibilidade
 
-## What technologies are used for this project?
+## 🚀 Como Funciona
 
-This project is built with:
+### 1. Cadastro
+- Empresas se registram como compradores ou fornecedores
+- Verificação de documentos e informações
+- Criação de perfil completo
 
+### 2. Descoberta
+- Compradores pesquisam produtos/fornecedores
+- Sistema de filtros avançados
+- Recomendações personalizadas
+
+### 3. Negociação
+- Contato direto entre as partes
+- Chat integrado na plataforma
+- Troca de documentos e especificações
+
+### 4. Fechamento
+- Acordos realizados fora da plataforma
+- Feedback e avaliações pós-transação
+- Histórico de relacionamentos comerciais
+
+## 💰 Modelo de Negócio
+
+### Planos de Assinatura
+- **Básico**: Funcionalidades essenciais
+- **Profissional**: Recursos avançados de gestão
+- **Enterprise**: Soluções customizadas
+
+### Fontes de Receita
+- Assinaturas mensais/anuais
+- Comissões em transações (futuro)
+- Anúncios premium
+- Serviços de consultoria
+
+## 📈 Métricas de Sucesso
+
+### KPIs Principais
+- Número de fornecedores cadastrados
+- Volume de transações geradas
+- Taxa de conversão de leads
+- Tempo médio de negociação
+- Satisfação dos usuários (NPS)
+
+### Objetivos de Crescimento
+- **Ano 1**: 1.000 fornecedores, R$ 1M em GMV
+- **Ano 2**: 5.000 fornecedores, R$ 10M em GMV
+- **Ano 3**: 15.000 fornecedores, R$ 50M em GMV
+
+## 🔒 Segurança e Compliance
+
+- Verificação de empresas cadastradas
+- Proteção de dados (LGPD)
+- Criptografia de comunicações
+- Backup automático de dados
+- Monitoramento de transações suspeitas
+
+## 🌟 Diferenciais Competitivos
+
+1. **Foco Industrial**: Especialização em B2B industrial
+2. **Sem Intermediários**: Conexão direta entre partes
+3. **Interface Intuitiva**: Experiência de usuário otimizada
+4. **Suporte Local**: Atendimento em português
+5. **Flexibilidade**: Adaptação às necessidades específicas
+
+## 📞 Suporte e Contato
+
+- Chat online durante horário comercial
+- Email de suporte técnico
+- Central de ajuda com tutoriais
+- Webinars de treinamento
+- Suporte telefônico para planos premium
+
+## 🔄 Roadmap Futuro
+
+### Curto Prazo (3-6 meses)
+- Sistema de pagamentos integrado
+- App mobile
+- API para integrações
+- Sistema de avaliações avançado
+
+### Médio Prazo (6-12 meses)
+- Inteligência artificial para recomendações
+- Sistema de leilões reversos
+- Marketplace internacional
+- Logística integrada
+
+### Longo Prazo (1-2 anos)
+- Blockchain para contratos
+- IoT para rastreamento
+- Análise preditiva de demanda
+- Ecossistema financeiro completo
+
+## 📄 Informações Técnicas
+
+### Tecnologias Utilizadas
 - Vite
 - TypeScript
 - React
