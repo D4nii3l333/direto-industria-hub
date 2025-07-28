@@ -1,4 +1,4 @@
-# Marketplace B2B Industrial
+# Marketplace B2B Industrial j
 
 ## 📋 Sobre o Projeto
 
