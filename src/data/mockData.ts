@@ -30,6 +30,13 @@ export interface Product {
   minQuantity: number;
   price: number;
   categoryId: number;
+  image?: string;
+  unit?: string;
+  brand?: string;
+  model?: string;
+  weight?: number;
+  dimensions?: string;
+  specifications?: string[];
 }
 
 export interface User {
@@ -121,10 +128,17 @@ const defaultCategories: Category[] = [
         id: 1,
         name: "Compressor de Ar Industrial",
         supplierId: 1,
-        description: "Compressor de alta capacidade para uso industrial",
+        description: "Compressor de alta capacidade para uso industrial com tecnologia avançada",
         minQuantity: 1,
         price: 15000,
-        categoryId: 1
+        categoryId: 1,
+        image: "https://via.placeholder.com/300x200",
+        unit: "unidade",
+        brand: "MetalTech",
+        model: "MT-C500",
+        weight: 85.5,
+        dimensions: "120x80x100 cm",
+        specifications: ["Pressão máxima: 8 bar", "Capacidade: 500L/min", "Motor: 5HP", "Voltagem: 220V/380V"]
       }
     ]
   },

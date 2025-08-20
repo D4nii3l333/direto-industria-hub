@@ -26,7 +26,14 @@ const AdminCategories = () => {
     description: '',
     minQuantity: 1,
     price: 0,
-    categoryId: 0
+    categoryId: 0,
+    image: '',
+    unit: 'unidade',
+    brand: '',
+    model: '',
+    weight: 0,
+    dimensions: '',
+    specifications: ''
   });
 
   const [supplierForm, setSupplierForm] = useState({
@@ -90,7 +97,14 @@ const AdminCategories = () => {
       description: productForm.description,
       minQuantity: productForm.minQuantity,
       price: productForm.price,
-      categoryId: productForm.categoryId
+      categoryId: productForm.categoryId,
+      image: productForm.image || 'https://via.placeholder.com/300x200',
+      unit: productForm.unit,
+      brand: productForm.brand,
+      model: productForm.model,
+      weight: productForm.weight || 0,
+      dimensions: productForm.dimensions,
+      specifications: productForm.specifications ? productForm.specifications.split(',').map(s => s.trim()).filter(s => s) : []
     };
 
     const updatedCategories = categories.map(category => {
@@ -129,16 +143,14 @@ const AdminCategories = () => {
 
   const handleDeleteProduct = (categoryId: number, productId: number) => {
     if (confirm('Tem certeza que deseja excluir este produto?')) {
+      // Remove o produto de TODAS as categorias para evitar duplicatas
       const updatedCategories = categories.map(category => {
-        if (category.id === categoryId) {
-          const updatedProducts = category.products.filter(p => p.id !== productId);
-          return {
-            ...category,
-            products: updatedProducts,
-            count: updatedProducts.length
-          };
-        }
-        return category;
+        const updatedProducts = category.products.filter(p => p.id !== productId);
+        return {
+          ...category,
+          products: updatedProducts,
+          count: updatedProducts.length
+        };
       });
       updateCategories(updatedCategories);
       toast({ title: "Produto excluído com sucesso!" });
@@ -152,7 +164,21 @@ const AdminCategories = () => {
   };
 
   const resetProductForm = () => {
-    setProductForm({ name: '', supplierId: 0, description: '', minQuantity: 1, price: 0, categoryId: 0 });
+    setProductForm({ 
+      name: '', 
+      supplierId: 0, 
+      description: '', 
+      minQuantity: 1, 
+      price: 0, 
+      categoryId: 0,
+      image: '',
+      unit: 'unidade',
+      brand: '',
+      model: '',
+      weight: 0,
+      dimensions: '',
+      specifications: ''
+    });
     setEditingProduct(null);
     setShowProductForm(false);
   };
@@ -303,6 +329,26 @@ const AdminCategories = () => {
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+                  <input
+                    type="text"
+                    value={productForm.brand}
+                    onChange={(e) => setProductForm({...productForm, brand: e.target.value})}
+                    placeholder="Ex: MetalTech"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
+                  <input
+                    type="text"
+                    value={productForm.model}
+                    onChange={(e) => setProductForm({...productForm, model: e.target.value})}
+                    placeholder="Ex: MT-C500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                  />
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Fornecedor *</label>
                   <div className="flex space-x-2">
                     <select
@@ -360,6 +406,55 @@ const AdminCategories = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Unidade</label>
+                  <select
+                    value={productForm.unit}
+                    onChange={(e) => setProductForm({...productForm, unit: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                  >
+                    <option value="unidade">Unidade</option>
+                    <option value="kg">Quilograma (kg)</option>
+                    <option value="litro">Litro</option>
+                    <option value="metro">Metro</option>
+                    <option value="m²">Metro quadrado (m²)</option>
+                    <option value="m³">Metro cúbico (m³)</option>
+                    <option value="tonelada">Tonelada</option>
+                    <option value="pacote">Pacote</option>
+                    <option value="caixa">Caixa</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Peso (kg)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={productForm.weight}
+                    onChange={(e) => setProductForm({...productForm, weight: parseFloat(e.target.value)})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Dimensões</label>
+                  <input
+                    type="text"
+                    value={productForm.dimensions}
+                    onChange={(e) => setProductForm({...productForm, dimensions: e.target.value})}
+                    placeholder="Ex: 120x80x100 cm"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">URL da Imagem</label>
+                <input
+                  type="url"
+                  value={productForm.image}
+                  onChange={(e) => setProductForm({...productForm, image: e.target.value})}
+                  placeholder="https://exemplo.com/imagem.jpg"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
@@ -367,6 +462,16 @@ const AdminCategories = () => {
                   value={productForm.description}
                   onChange={(e) => setProductForm({...productForm, description: e.target.value})}
                   rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Especificações Técnicas (separadas por vírgula)</label>
+                <textarea
+                  value={productForm.specifications}
+                  onChange={(e) => setProductForm({...productForm, specifications: e.target.value})}
+                  rows={2}
+                  placeholder="Ex: Pressão máxima: 8 bar, Capacidade: 500L/min, Motor: 5HP"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
                 />
               </div>
@@ -499,11 +604,30 @@ const AdminCategories = () => {
                   <div className="space-y-2">
                     {category.products.map((product) => (
                       <div key={product.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                        <div>
-                          <h5 className="font-medium text-gray-900">{product.name}</h5>
-                          <p className="text-sm text-gray-600">
-                            {suppliers.find(s => s.id === product.supplierId)?.name || 'Fornecedor não encontrado'} - R$ {product.price.toLocaleString('pt-BR')} - Min: {product.minQuantity}
-                          </p>
+                        <div className="flex items-start space-x-4">
+                          {product.image && (
+                            <img 
+                              src={product.image} 
+                              alt={product.name}
+                              className="w-12 h-12 rounded object-cover flex-shrink-0"
+                            />
+                          )}
+                          <div className="flex-1">
+                            <h5 className="font-medium text-gray-900">{product.name}</h5>
+                            <p className="text-sm text-gray-600">
+                              {suppliers.find(s => s.id === product.supplierId)?.name || 'Fornecedor não encontrado'}
+                            </p>
+                            <div className="text-xs text-gray-500 mt-1 space-y-1">
+                              <div>R$ {product.price.toLocaleString('pt-BR')} - Min: {product.minQuantity} {product.unit}</div>
+                              {product.brand && <div>Marca: {product.brand}</div>}
+                              {product.model && <div>Modelo: {product.model}</div>}
+                              {product.weight && <div>Peso: {product.weight}kg</div>}
+                              {product.dimensions && <div>Dimensões: {product.dimensions}</div>}
+                              {product.specifications && product.specifications.length > 0 && (
+                                <div>Specs: {product.specifications.slice(0, 2).join(', ')}{product.specifications.length > 2 ? '...' : ''}</div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                         <div className="flex space-x-2">
                           <button
@@ -515,7 +639,14 @@ const AdminCategories = () => {
                                 description: product.description,
                                 minQuantity: product.minQuantity,
                                 price: product.price,
-                                categoryId: product.categoryId
+                                categoryId: product.categoryId,
+                                image: product.image || '',
+                                unit: product.unit || 'unidade',
+                                brand: product.brand || '',
+                                model: product.model || '',
+                                weight: product.weight || 0,
+                                dimensions: product.dimensions || '',
+                                specifications: product.specifications?.join(', ') || ''
                               });
                               setShowProductForm(true);
                             }}
