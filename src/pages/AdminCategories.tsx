@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { getCategories, setCategories, Category, Product } from '@/data/mockData';
+import { getCategories, setCategories, Category, Product, getSuppliers, Supplier } from '@/data/mockData';
 
 const AdminCategories = () => {
   const navigate = useNavigate();
   const [categories, setCategoriesState] = useState<Category[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showProductForm, setShowProductForm] = useState(false);
+  const [showSupplierForm, setShowSupplierForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
@@ -20,11 +22,18 @@ const AdminCategories = () => {
 
   const [productForm, setProductForm] = useState({
     name: '',
-    company: '',
+    supplierId: 0,
     description: '',
     minQuantity: 1,
     price: 0,
     categoryId: 0
+  });
+
+  const [supplierForm, setSupplierForm] = useState({
+    name: '',
+    location: '',
+    specialties: '',
+    verified: true
   });
 
   useEffect(() => {
@@ -34,9 +43,11 @@ const AdminCategories = () => {
       return;
     }
     
-    // Carrega categorias do localStorage
+    // Carrega categorias e fornecedores do localStorage
     const loadedCategories = getCategories();
+    const loadedSuppliers = getSuppliers();
     setCategoriesState(loadedCategories);
+    setSuppliers(loadedSuppliers);
   }, [navigate]);
 
   const updateCategories = (newCategories: Category[]) => {
@@ -75,7 +86,7 @@ const AdminCategories = () => {
     const newProduct: Product = {
       id: editingProduct ? editingProduct.id : Date.now(),
       name: productForm.name,
-      company: productForm.company,
+      supplierId: productForm.supplierId,
       description: productForm.description,
       minQuantity: productForm.minQuantity,
       price: productForm.price,
@@ -141,9 +152,44 @@ const AdminCategories = () => {
   };
 
   const resetProductForm = () => {
-    setProductForm({ name: '', company: '', description: '', minQuantity: 1, price: 0, categoryId: 0 });
+    setProductForm({ name: '', supplierId: 0, description: '', minQuantity: 1, price: 0, categoryId: 0 });
     setEditingProduct(null);
     setShowProductForm(false);
+  };
+
+  const handleSupplierSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const newSupplier: Supplier = {
+      id: Date.now(),
+      name: supplierForm.name,
+      location: supplierForm.location,
+      rating: 5,
+      specialties: supplierForm.specialties.split(',').map(s => s.trim()),
+      image: 'https://via.placeholder.com/150',
+      verified: supplierForm.verified,
+      description: '',
+      phone: '',
+      email: ''
+    };
+
+    const updatedSuppliers = [...suppliers, newSupplier];
+    setSuppliers(updatedSuppliers);
+    
+    // Também atualiza no localStorage
+    const { setSuppliers: setStoredSuppliers } = require('@/data/mockData');
+    setStoredSuppliers(updatedSuppliers);
+
+    // Seleciona automaticamente o novo fornecedor no formulário de produto
+    setProductForm({...productForm, supplierId: newSupplier.id});
+    
+    toast({ title: "Fornecedor adicionado com sucesso!" });
+    resetSupplierForm();
+  };
+
+  const resetSupplierForm = () => {
+    setSupplierForm({ name: '', location: '', specialties: '', verified: true });
+    setShowSupplierForm(false);
   };
 
   return (
@@ -257,14 +303,27 @@ const AdminCategories = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Empresa *</label>
-                  <input
-                    type="text"
-                    value={productForm.company}
-                    onChange={(e) => setProductForm({...productForm, company: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
-                    required
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Fornecedor *</label>
+                  <div className="flex space-x-2">
+                    <select
+                      value={productForm.supplierId}
+                      onChange={(e) => setProductForm({...productForm, supplierId: parseInt(e.target.value)})}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                      required
+                    >
+                      <option value={0}>Selecione um fornecedor</option>
+                      {suppliers.map(supplier => (
+                        <option key={supplier.id} value={supplier.id}>{supplier.name}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowSupplierForm(true)}
+                      className="bg-blue-500 text-white px-3 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors whitespace-nowrap"
+                    >
+                      + Novo
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
@@ -330,6 +389,73 @@ const AdminCategories = () => {
           </div>
         )}
 
+        {/* Supplier Form */}
+        {showSupplierForm && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+            <h3 className="text-lg font-semibold mb-4">Adicionar Novo Fornecedor</h3>
+            <form onSubmit={handleSupplierSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+                  <input
+                    type="text"
+                    value={supplierForm.name}
+                    onChange={(e) => setSupplierForm({...supplierForm, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Localização *</label>
+                  <input
+                    type="text"
+                    value={supplierForm.location}
+                    onChange={(e) => setSupplierForm({...supplierForm, location: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Especialidades (separadas por vírgula)</label>
+                <input
+                  type="text"
+                  value={supplierForm.specialties}
+                  onChange={(e) => setSupplierForm({...supplierForm, specialties: e.target.value})}
+                  placeholder="Ex: Aço Inoxidável, Metalurgia, Soldas"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141]"
+                />
+              </div>
+              <div>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={supplierForm.verified}
+                    onChange={(e) => setSupplierForm({...supplierForm, verified: e.target.checked})}
+                    className="rounded border-gray-300 focus:border-[#FED141]"
+                  />
+                  <span className="text-sm text-gray-700">Fornecedor verificado</span>
+                </label>
+              </div>
+              <div className="flex space-x-3">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                >
+                  Adicionar Fornecedor
+                </button>
+                <button
+                  type="button"
+                  onClick={resetSupplierForm}
+                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         {/* Categories List */}
         <div className="grid gap-6">
           {categories.map((category) => (
@@ -375,7 +501,9 @@ const AdminCategories = () => {
                       <div key={product.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                         <div>
                           <h5 className="font-medium text-gray-900">{product.name}</h5>
-                          <p className="text-sm text-gray-600">{product.company} - R$ {product.price.toLocaleString('pt-BR')} - Min: {product.minQuantity}</p>
+                          <p className="text-sm text-gray-600">
+                            {suppliers.find(s => s.id === product.supplierId)?.name || 'Fornecedor não encontrado'} - R$ {product.price.toLocaleString('pt-BR')} - Min: {product.minQuantity}
+                          </p>
                         </div>
                         <div className="flex space-x-2">
                           <button
@@ -383,7 +511,7 @@ const AdminCategories = () => {
                               setEditingProduct(product);
                               setProductForm({
                                 name: product.name,
-                                company: product.company,
+                                supplierId: product.supplierId,
                                 description: product.description,
                                 minQuantity: product.minQuantity,
                                 price: product.price,

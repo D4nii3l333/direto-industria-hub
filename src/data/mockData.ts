@@ -25,7 +25,7 @@ export interface Category {
 export interface Product {
   id: number;
   name: string;
-  company: string;
+  supplierId: number;
   description: string;
   minQuantity: number;
   price: number;
@@ -120,7 +120,7 @@ const defaultCategories: Category[] = [
       {
         id: 1,
         name: "Compressor de Ar Industrial",
-        company: "MetalTech Ind.",
+        supplierId: 1,
         description: "Compressor de alta capacidade para uso industrial",
         minQuantity: 1,
         price: 15000,
