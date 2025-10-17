@@ -1,12 +1,25 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Star, MapPin, Phone, Mail, Globe, MessageCircle, Shield } from 'lucide-react';
+import { Star, MapPin, Phone, Mail, Globe, MessageCircle, Shield, Heart } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useFavorites } from '@/hooks/useFavorites';
+import { useConversations } from '@/hooks/useConversations';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 const SupplierProfile = () => {
   const { id } = useParams();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { toggleFavorite, isFavorite } = useFavorites(user?.id);
+  const { createConversation } = useConversations(user?.id);
+  const [showConversationDialog, setShowConversationDialog] = useState(false);
+  const [conversationSubject, setConversationSubject] = useState('');
   
   // Mock data - in real app, would fetch from API
   const supplier = {
@@ -78,12 +91,43 @@ const SupplierProfile = () => {
               <p className="text-gray-700 mb-6">{supplier.description}</p>
               
               <div className="flex gap-3">
-                <button className="bg-[#FED141] text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors flex items-center">
+                <button 
+                  onClick={() => {
+                    if (!user) {
+                      toast({
+                        title: "Faça login",
+                        description: "Você precisa estar logado para iniciar conversas",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    setShowConversationDialog(true);
+                  }}
+                  className="bg-[#FED141] text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors flex items-center"
+                >
                   <MessageCircle className="w-5 h-5 mr-2" />
                   Iniciar Conversa
                 </button>
-                <button className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors">
-                  Salvar Fornecedor
+                <button 
+                  onClick={() => {
+                    if (!user) {
+                      toast({
+                        title: "Faça login",
+                        description: "Você precisa estar logado para favoritar fornecedores",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    toggleFavorite(id!);
+                  }}
+                  className={`px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                    isFavorite(id!) 
+                      ? 'bg-red-100 text-red-700 hover:bg-red-200' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <Heart className={`w-5 h-5 ${isFavorite(id!) ? 'fill-current' : ''}`} />
+                  {isFavorite(id!) ? 'Remover dos Favoritos' : 'Salvar Fornecedor'}
                 </button>
               </div>
             </div>
@@ -177,6 +221,44 @@ const SupplierProfile = () => {
         </div>
       </main>
       <Footer />
+
+      <Dialog open={showConversationDialog} onOpenChange={setShowConversationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Iniciar Conversa</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Assunto da conversa</label>
+              <Input
+                value={conversationSubject}
+                onChange={(e) => setConversationSubject(e.target.value)}
+                placeholder="Ex: Consulta sobre produtos"
+              />
+            </div>
+            <Button
+              onClick={async () => {
+                if (!conversationSubject.trim()) {
+                  toast({
+                    title: "Erro",
+                    description: "Por favor, informe o assunto da conversa",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                const conversation = await createConversation(id!, conversationSubject);
+                if (conversation) {
+                  setShowConversationDialog(false);
+                  setConversationSubject('');
+                }
+              }}
+              className="w-full"
+            >
+              Criar Conversa
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -7,9 +7,13 @@ import SupplierCard from '@/components/SupplierCard';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { getSuppliers, getCategories, initializeData } from '@/data/mockData';
+import { useAuth } from '@/hooks/useAuth';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
+  const { addToHistory } = useSearchHistory(user?.id);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [results, setResults] = useState<any[]>([]);
@@ -61,7 +65,12 @@ const SearchPage = () => {
     }
 
     setResults(filtered);
-  }, [searchTerm, categoryFilter, suppliers, categories]);
+    
+    // Save to search history if user is logged in and there's a search term
+    if (user && searchTerm.trim()) {
+      addToHistory(searchTerm, filtered.length);
+    }
+  }, [searchTerm, categoryFilter, suppliers, categories, user, addToHistory]);
 
   if (loading) {
     return (
