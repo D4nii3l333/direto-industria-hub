@@ -2,12 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Users, Package, Tag, LogOut } from 'lucide-react';
-import { getSuppliers, getCategories, getUsers, initializeData } from '@/data/mockData';
-import BackupPanel from '@/components/BackupPanel';
+import { supabase } from '@/integrations/supabase/client';
+import { useAdmin } from '@/hooks/useAdmin';
+import { useAuth } from '@/hooks/useAuth';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { isAdmin, loading } = useAdmin();
+  const { signOut } = useAuth();
   const [stats, setStats] = useState([
     { name: 'Fornecedores', value: '0', icon: Package, color: 'bg-blue-500' },
     { name: 'Categorias', value: '0', icon: Tag, color: 'bg-green-500' },
@@ -15,32 +18,49 @@ const AdminDashboard = () => {
   ]);
 
   useEffect(() => {
-    // Verifica se é admin
-    const isAdmin = localStorage.getItem('isAdmin');
-    if (!isAdmin) {
+    if (!loading && !isAdmin) {
       navigate('/admin/login');
       return;
     }
 
-    // Inicializa os dados se necessário
-    initializeData();
+    if (isAdmin) {
+      loadStats();
+    }
+  }, [isAdmin, loading, navigate]);
 
-    // Atualiza as estatísticas com dados reais
-    const suppliers = getSuppliers();
-    const categories = getCategories();
-    const users = getUsers();
+  const loadStats = async () => {
+    try {
+      const [suppliersRes, categoriesRes, usersRes] = await Promise.all([
+        supabase.from('suppliers').select('id', { count: 'exact', head: true }),
+        supabase.from('categories').select('id', { count: 'exact', head: true }),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+      ]);
 
-    setStats([
-      { name: 'Fornecedores', value: suppliers.length.toString(), icon: Package, color: 'bg-blue-500' },
-      { name: 'Categorias', value: categories.length.toString(), icon: Tag, color: 'bg-green-500' },
-      { name: 'Usuários', value: users.length.toString(), icon: Users, color: 'bg-purple-500' },
-    ]);
-  }, [navigate]);
+      setStats([
+        { name: 'Fornecedores', value: (suppliersRes.count || 0).toString(), icon: Package, color: 'bg-blue-500' },
+        { name: 'Categorias', value: (categoriesRes.count || 0).toString(), icon: Tag, color: 'bg-green-500' },
+        { name: 'Usuários', value: (usersRes.count || 0).toString(), icon: Users, color: 'bg-purple-500' },
+      ]);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAdmin');
+  const handleLogout = async () => {
+    await signOut();
     navigate('/');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FED141] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -56,7 +76,6 @@ const AdminDashboard = () => {
               <h1 className="text-xl font-semibold text-gray-900">Painel Administrativo</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <BackupPanel />
               <button
                 onClick={handleLogout}
                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"

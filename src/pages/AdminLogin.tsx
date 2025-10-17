@@ -1,36 +1,64 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Shield } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { signIn } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdmin();
+
+  useEffect(() => {
+    if (!adminLoading && isAdmin) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAdmin, adminLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Validação simples de login admin
-    if (username === 'admin' && password === 'admin') {
-      localStorage.setItem('isAdmin', 'true');
-      toast({
-        title: "Login administrativo realizado com sucesso!",
-        description: "Bem-vindo ao painel administrativo.",
-      });
-      navigate('/admin/dashboard');
-    } else {
+    try {
+      const { data, error } = await signIn(email, password);
+
+      if (error) {
+        toast({
+          title: "Erro no login",
+          description: error.message,
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        // Verificar se é admin
+        toast({
+          title: "Login realizado com sucesso!",
+          description: "Verificando permissões de administrador...",
+        });
+        
+        // A verificação de admin acontecerá automaticamente via useAdmin hook
+        // e redirecionará se for admin
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+      }
+    } catch (error: any) {
       toast({
         title: "Erro no login",
-        description: "Usuário ou senha incorretos.",
+        description: error.message || "Ocorreu um erro ao fazer login.",
         variant: "destructive"
       });
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -55,15 +83,15 @@ const AdminLogin = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                Usuário
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email
               </label>
               <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin"
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@industriadireta.com"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141] focus:ring-2 focus:ring-yellow-200"
                 required
               />
@@ -79,7 +107,7 @@ const AdminLogin = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="admin"
+                  placeholder="••••••••"
                   className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-[#FED141] focus:ring-2 focus:ring-yellow-200"
                   required
                 />
