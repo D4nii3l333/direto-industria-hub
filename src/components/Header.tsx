@@ -1,11 +1,11 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Search, User, Bell } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulando estado de login
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -44,7 +44,7 @@ const Header = () => {
               <Search className="w-5 h-5" />
             </button>
             
-            {isLoggedIn ? (
+            {user ? (
               <div className="flex items-center space-x-3">
                 <button className="p-2 text-black hover:text-[#FED141] transition-colors relative">
                   <Bell className="w-5 h-5" />
@@ -96,7 +96,7 @@ const Header = () => {
               <Link to="/planos" className="text-black hover:text-[#FED141] transition-colors py-2">Planos</Link>
               
               <div className="pt-4 border-t border-gray-200 flex flex-col space-y-2">
-                {isLoggedIn ? (
+                {user ? (
                   <>
                     <Link to="/dashboard" className="text-black hover:text-[#FED141] transition-colors py-2">Dashboard</Link>
                     <button className="text-left text-black hover:text-[#FED141] transition-colors py-2">Notificações</button>
