@@ -11,6 +11,7 @@ import Search from "./pages/Search";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 import HowItWorks from "./pages/HowItWorks";
 import Plans from "./pages/Plans";
 import Chat from "./pages/Chat";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/entrar" element={<Login />} />
           <Route path="/cadastro" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/configuracoes" element={<Settings />} />
           <Route path="/como-funciona" element={<HowItWorks />} />
           <Route path="/planos" element={<Plans />} />
           <Route path="/chat" element={<Chat />} />

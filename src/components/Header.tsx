@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, User, Bell } from 'lucide-react';
+import { Menu, X, Search, User, Bell, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
@@ -57,6 +57,13 @@ const Header = () => {
                   <User className="w-5 h-5" />
                   <span>Dashboard</span>
                 </Link>
+                <Link 
+                  to="/configuracoes" 
+                  className="p-2 text-black hover:text-[#FED141] transition-colors"
+                  title="Configurações"
+                >
+                  <Settings className="w-5 h-5" />
+                </Link>
               </div>
             ) : (
               <>
@@ -99,6 +106,7 @@ const Header = () => {
                 {user ? (
                   <>
                     <Link to="/dashboard" className="text-black hover:text-[#FED141] transition-colors py-2">Dashboard</Link>
+                    <Link to="/configuracoes" className="text-black hover:text-[#FED141] transition-colors py-2">Configurações</Link>
                     <button className="text-left text-black hover:text-[#FED141] transition-colors py-2">Notificações</button>
                   </>
                 ) : (

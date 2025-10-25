@@ -231,24 +231,36 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
           avatar_url: string | null
+          cnpj: string | null
+          contact_email: string | null
           created_at: string | null
           full_name: string | null
           id: string
+          phone: string | null
           updated_at: string | null
         }
         Insert: {
+          address?: string | null
           avatar_url?: string | null
+          cnpj?: string | null
+          contact_email?: string | null
           created_at?: string | null
           full_name?: string | null
           id: string
+          phone?: string | null
           updated_at?: string | null
         }
         Update: {
+          address?: string | null
           avatar_url?: string | null
+          cnpj?: string | null
+          contact_email?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -322,6 +334,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_companies: {
+        Row: {
+          address: string | null
+          cnpj: string | null
+          company_name: string
+          created_at: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          cnpj?: string | null
+          company_name: string
+          created_at?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          cnpj?: string | null
+          company_name?: string
+          created_at?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -348,10 +393,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_admin: {
-        Args: { user_id: string }
-        Returns: boolean
-      }
+      is_admin: { Args: { user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
