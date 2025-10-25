@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, Building, Phone } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 const Register = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { signUp, user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/dashboard');
+    }
+  }, [user, authLoading, navigate]);
   
   const [userType, setUserType] = useState(searchParams.get('tipo') || 'comprador');
   const [formData, setFormData] = useState({
@@ -41,15 +49,33 @@ const Register = () => {
 
     setIsLoading(true);
 
-    // Simulate registration process
-    setTimeout(() => {
+    try {
+      const { error } = await signUp(formData.email, formData.password, formData.name);
+
+      if (error) {
+        toast({
+          title: "Erro no cadastro",
+          description: error.message,
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+
       toast({
         title: "Cadastro realizado com sucesso!",
         description: `Bem-vindo à IndústriaDireta! Você foi cadastrado como ${userType}.`,
       });
-      navigate('/dashboard');
+      
+      // O redirecionamento acontecerá automaticamente via useEffect
+    } catch (error: any) {
+      toast({
+        title: "Erro no cadastro",
+        description: error.message || "Ocorreu um erro ao criar sua conta.",
+        variant: "destructive"
+      });
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (

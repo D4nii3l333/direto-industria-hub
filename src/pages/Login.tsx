@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -9,20 +10,45 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { signIn, user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/dashboard');
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate login process
-    setTimeout(() => {
+    try {
+      const { error } = await signIn(email, password);
+
+      if (error) {
+        toast({
+          title: "Erro no login",
+          description: error.message,
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+
       toast({
         title: "Login realizado com sucesso!",
         description: "Bem-vindo de volta à IndústriaDireta.",
       });
-      navigate('/dashboard');
+      
+      // O redirecionamento acontecerá automaticamente via useEffect
+    } catch (error: any) {
+      toast({
+        title: "Erro no login",
+        description: error.message || "Ocorreu um erro ao fazer login.",
+        variant: "destructive"
+      });
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
